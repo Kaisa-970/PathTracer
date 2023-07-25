@@ -1,14 +1,17 @@
 #include <iostream>
 #include "vec3.h"
 
+
 int main() {
 	int nx = 200;
 	int ny = 100;
 
 	std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 
-	vec3 v1,v2;
+	vec3 v1 = { 1,2,3 }, v2 = {1,5,9};
 	auto v3 = v1 + v2;
+	v3 = 2*v3 * 2;
+	std::cout << v3 << std::endl;
 	for (int j = ny - 1; j >= 0; j--)
 	{
 		for (int i = 0; i < nx; i++)
