@@ -1,0 +1,6 @@
+﻿  main.cpp
+C:\WorkSpace\CPP\RayTracing\RayTracing\RayTracing\src\vec3.h(28,56): error C2804: 二进制“operator +”的参数太多
+C:\WorkSpace\CPP\RayTracing\RayTracing\RayTracing\src\vec3.h(28,56): error C2333: “vec3::operator +”: 函数声明中有错误；跳过函数体
+C:\WorkSpace\CPP\RayTracing\RayTracing\RayTracing\src\vec3.h(31,56): error C2804: 二进制“operator -”的参数太多
+C:\WorkSpace\CPP\RayTracing\RayTracing\RayTracing\src\vec3.h(31,56): error C2333: “vec3::operator -”: 函数声明中有错误；跳过函数体
+C:\WorkSpace\CPP\RayTracing\RayTracing\RayTracing\src\main.cpp(16,17): warning C4305: “初始化”: 从“double”到“float”截断
