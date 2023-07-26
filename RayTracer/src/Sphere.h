@@ -1,30 +1,55 @@
 #pragma once
 
-#include "Ray.h"
+#include "Hitable.h"
 
-class Sphere {
+class Sphere : public Hitable
+{
 public:
 	Sphere() = default;
 	Sphere(const vec3& c,float r):center(c),radius(r){}
 
-	float Hit(const Ray& ray) {
+	// Í¨¹ý Hitable ¼Ì³Ð
+	virtual bool Hit(const Ray& ray, float t_min, float t_max, HitResult& res) const override
+	{
 		vec3 oc = ray.origin - center;
 		float a = ray.direction.squared_length();
-		float b = 2.0 * oc.dot(ray.direction);
+		float b = oc.dot(ray.direction);
 		float c = oc.squared_length() - radius * radius;
 
-		float discriminant = b * b - 4 * a * c;
+		float discriminant = b * b - a * c;
 
-		if (discriminant<0)
+		if (discriminant < 0)
 		{
-			return -1.0;
+			return false;
 		}
 		else {
-			return (-b - sqrt(discriminant)) / (2.0 * a);
+			float temp = (-b - sqrt(discriminant)) / a;
+			if (temp < t_max && temp > t_min)
+			{
+				res.t = temp;
+				res.p = ray.PointAtDistance(res.t);
+				res.normal = (res.p - center) / radius;
+				return true;
+			}
+
+			temp = (-b + sqrt(discriminant)) / a;
+			if (temp < t_max && temp > t_min)
+			{
+				res.t = temp;
+				res.p = ray.PointAtDistance(res.t);
+				res.normal = (res.p - center) / radius;
+				return true;
+			}
 		}
+
+		return false;
+
 	}
+
+
 
 public:
 	vec3 center;
 	float radius;
+
 };
