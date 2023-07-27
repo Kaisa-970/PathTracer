@@ -6,7 +6,7 @@ class Sphere : public Hitable
 {
 public:
 	Sphere() = default;
-	Sphere(const vec3& c,float r):center(c),radius(r){}
+	Sphere(const vec3& c,float r,Material* mat):center(c),radius(r),material(mat){}
 
 	// Í¨¹ý Hitable ¼Ì³Ð
 	virtual bool Hit(const Ray& ray, float t_min, float t_max, HitResult& res) const override
@@ -29,6 +29,7 @@ public:
 				res.t = temp;
 				res.p = ray.PointAtDistance(res.t);
 				res.normal = (res.p - center) / radius;
+				res.material = material;
 				return true;
 			}
 
@@ -38,6 +39,7 @@ public:
 				res.t = temp;
 				res.p = ray.PointAtDistance(res.t);
 				res.normal = (res.p - center) / radius;
+				res.material = material;
 				return true;
 			}
 		}
@@ -51,5 +53,5 @@ public:
 public:
 	vec3 center;
 	float radius;
-
+	Material* material;
 };
