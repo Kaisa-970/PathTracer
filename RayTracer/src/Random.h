@@ -20,3 +20,11 @@ vec3 RandomPointInUnitSphere() {
 	} while (p.squared_length() >= 1.0f);
 	return p;
 }
+
+vec3 RandomPointInUnitCircle() {
+	vec3 p;
+	do {
+		p = 2.0 * vec3(GetRandom01(), GetRandom01(), 0.0) - vec3(1.0, 1.0, 0.0);
+	} while (p.squared_length() >= 1.0f);
+	return p;
+}

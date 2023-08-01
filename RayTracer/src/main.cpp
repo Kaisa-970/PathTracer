@@ -107,18 +107,22 @@ int main() {
 	std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 	fs<< "P3\n" << nx << " " << ny << "\n255\n";
 	
-	Camera cam(vec3(-2,2,1),vec3(0,0,-1),vec3(0,1,0), 90, float(nx) / float(ny));
+	vec3 lookfrom(3, 3, 2);
+	vec3 lookat(0, 0, -1);
+	float focus_dist = (lookfrom - lookat).length();
+	float aperture = 2.0;
+	Camera cam(lookfrom,lookat,vec3(0,1,0), 90, float(nx) / float(ny),aperture,focus_dist);
 	float R = cos(M_PI / 4.0);
 
-	Hitable* objList[4];
+	Hitable* objList[5];
 	objList[0] = new Sphere(vec3(0, 0, -1), 0.5, new Lambertian({0.1,0.2,0.5}));
 	// objList[0] = new Sphere(vec3(0, 0, -1), 0.5, new Dielectric(1.5));
 	objList[1] = new Sphere(vec3(0, -100.5, -1), 100.0, new Lambertian({ 0.8,0.8,0.0 }));
 	objList[2] = new Sphere(vec3(1, 0, -1), 0.5, new Metal({ 0.8,0.6,0.2 }, 0.1));
 	objList[3] = new Sphere(vec3(-1, 0, -1), 0.5, new Dielectric(1.5));
-	// objList[4] = new Sphere(vec3(-1, 0, -1), -0.45, new Dielectric(1.5));
+	objList[4] = new Sphere(vec3(-1, 0, -1), -0.45, new Dielectric(1.5));
 
-	Hitable* scene = new HitableList(objList, 4);
+	Hitable* scene = new HitableList(objList, 5);
 
 	std::thread threads[num_threads];
 	std::mutex mtx;
