@@ -8,8 +8,8 @@
 #include <mutex>
 
 const float MAXFLOAT = std::numeric_limits<float>::max();
-const int nx = 512;
-const int ny = 256;
+const int nx = 1024;
+const int ny = 512;
 const int totalPixels = nx * ny;
 
 std::atomic<int> renderedPixels(0);
@@ -91,6 +91,40 @@ void simulateRender() {
 	std::cout << std::endl;
 }
 
+Hitable* RandomScene() {
+	int n = 500;
+	Hitable** list = new Hitable * [n + 1];
+	list[0] = new Sphere(vec3(0, -1000, 0),1000, new Lambertian(vec3(0.5, 0.5, 0.5)));
+	int i = 1;
+	for (int a = -11;a<11;a++)
+	{
+		for (int b = -11;b<11;b++)
+		{
+			float choose_mat = GetRandom01();
+			vec3 center(a + 0.9 * GetRandom01(), 0.2, b + 0.9 * GetRandom01());
+			if (choose_mat<0.8)
+			{
+				list[i++] = new Sphere(center, 0.2,
+					new Lambertian(vec3(GetRandom01() * GetRandom01(), GetRandom01() * GetRandom01(), GetRandom01() * GetRandom01())));
+
+			}
+			else if(choose_mat<0.95)
+			{
+				list[i++] = new Sphere(center, 0.2, new Metal(vec3(0.5 * (1 + GetRandom01()), 0.5 * (1 + GetRandom01()), 0.5 * (1 + GetRandom01()))
+					, 0.5 * GetRandom01()));
+			}
+			else {
+				list[i++] = new Sphere(center, 0.2, new Dielectric(1.5));
+			}
+		}
+	}
+	list[i++] = new Sphere(vec3(0, 1, 0), 1, new Dielectric(1.5));
+	list[i++] = new Sphere(vec3(-4, 1, 0), 1, new Lambertian(vec3(0.4, 0.2, 0.1)));
+	list[i++] = new Sphere(vec3(4, 1, 0), 1, new Metal(vec3(0.7, 0.6, 0.5), 0.0));
+
+	return new HitableList{ list,i };
+}
+
 
 int main() {
 
@@ -107,22 +141,24 @@ int main() {
 	std::cout << "P3\n" << nx << " " << ny << "\n255\n";
 	fs<< "P3\n" << nx << " " << ny << "\n255\n";
 	
-	vec3 lookfrom(3, 3, 2);
-	vec3 lookat(0, 0, -1);
-	float focus_dist = (lookfrom - lookat).length();
-	float aperture = 2.0;
-	Camera cam(lookfrom,lookat,vec3(0,1,0), 90, float(nx) / float(ny),aperture,focus_dist);
+	vec3 lookfrom(10, 1.3, 2);
+	vec3 lookat(4, 1, 0);
+	float focus_dist = 1;// (lookfrom - lookat).length();
+	float aperture = 0.0;
+	Camera cam(lookfrom,lookat,vec3(0,1,0), 25.0, float(nx) / float(ny),aperture,focus_dist);
 	float R = cos(M_PI / 4.0);
 
-	Hitable* objList[5];
-	objList[0] = new Sphere(vec3(0, 0, -1), 0.5, new Lambertian({0.1,0.2,0.5}));
-	// objList[0] = new Sphere(vec3(0, 0, -1), 0.5, new Dielectric(1.5));
-	objList[1] = new Sphere(vec3(0, -100.5, -1), 100.0, new Lambertian({ 0.8,0.8,0.0 }));
-	objList[2] = new Sphere(vec3(1, 0, -1), 0.5, new Metal({ 0.8,0.6,0.2 }, 0.1));
-	objList[3] = new Sphere(vec3(-1, 0, -1), 0.5, new Dielectric(1.5));
-	objList[4] = new Sphere(vec3(-1, 0, -1), -0.45, new Dielectric(1.5));
+	//Hitable* objList[5];
+	//objList[0] = new Sphere(vec3(0, 0, -1), 0.5, new Lambertian({0.1,0.2,0.5}));
+	//// objList[0] = new Sphere(vec3(0, 0, -1), 0.5, new Dielectric(1.5));
+	//objList[1] = new Sphere(vec3(0, -100.5, -1), 100.0, new Lambertian({ 0.8,0.8,0.0 }));
+	//objList[2] = new Sphere(vec3(1, 0, -1), 0.5, new Metal({ 0.8,0.6,0.2 }, 0.1));
+	//objList[3] = new Sphere(vec3(-1, 0, -1), 0.5, new Dielectric(1.5));
+	//objList[4] = new Sphere(vec3(-1, 0, -1), -0.45, new Dielectric(1.5));
 
-	Hitable* scene = new HitableList(objList, 5);
+	//Hitable* scene = new HitableList(objList, 5);
+
+	Hitable* scene = RandomScene();
 
 	std::thread threads[num_threads];
 	std::mutex mtx;
